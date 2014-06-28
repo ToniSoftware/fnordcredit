@@ -166,13 +166,12 @@ app.get("/button/create/:price/:username", function(req, res){
                 "price_currency_iso": 'EUR',
                 "custom": price + ';' + username,
                 "description": 'fnordcredit Einzahlung - ' + username,
-                "type": 'buy_now',
-                "style": 'custom_large'
+                "type": 'buy_now'
             }
         };
     coinbase.buttons.create(param, function (err, data) {
         if (err) throw err;
-        var send = '<a class="coinbase-button" data-code="' + data.button.code +'" href="https://coinbase.com/checkouts/' + data.button.code +'">Pay With Bitcoin</a><script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>';
+        var send = '<a class="coinbase-button" data-code="' + data.button.code +'" href="https://coinbase.com/checkouts/' + data.button.code +'">Pay with Bitcoin</a><script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>';
         res.send(send);
     });
 });
