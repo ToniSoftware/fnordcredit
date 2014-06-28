@@ -8,6 +8,14 @@ if(config.mqtt.enable){
     var mqtt = require('mqtt');
     var mqttclient = mqtt.createClient(config.mqtt.port, config.mqtt.host);
 }
+var util = require('util')
+if(config.coinbase.enable){
+    var Coinbase = require('coinbase');
+    var coinbase = new Coinbase({
+        APIKey: config.coinbase.apikey,
+        APISecret: config.coinbase.apisecret
+    });
+}
 var app = express();
 var io;
 
@@ -146,6 +154,27 @@ app.post("/user/credit", function(req, res){
         });
 
     })
+});
+
+app.get("/button/create/:price/:username", function(req, res){
+    var price = req.params.price;
+    var username = req.params.username;
+    var param = {
+            "button": {
+                "name": 'fnordcredit Payment',
+                "price_string": price,
+                "price_currency_iso": 'EUR',
+                "custom": price + ';' + username,
+                "description": 'fnordcredit Einzahlung - ' + username,
+                "type": 'buy_now',
+                "style": 'custom_large'
+            }
+        };
+    coinbase.buttons.create(param, function (err, data) {
+        if (err) throw err;
+        var send = '<a class="coinbase-button" data-code="' + data.button.code +'" href="https://coinbase.com/checkouts/' + data.button.code +'">Pay With Bitcoin</a><script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>';
+        res.send(send);
+    });
 });
 
 function getUserAsync(username, cb){
