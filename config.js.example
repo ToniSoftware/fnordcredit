@@ -24,4 +24,13 @@ config.mqtt.host = "localhost";
 config.mqtt.port = 1883;
 config.mqtt.prefix = "service/fnordcredit";
 
+
+config.coinbase = {};
+
+config.coinbase.enable = false;
+config.coinbase.currency = "EUR";
+config.coinbase.apikey = "";
+config.coinbase.apisecret = "";
+
+
 module.exports = config;
