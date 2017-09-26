@@ -377,6 +377,29 @@ app.post('/user/change-token', function (req, res) {
     });
 });
 
+app.post('/system/resetCredit', function(req, res){
+    var pincode = req.header("X-User-Pincode");
+    
+    if (pincode != config.settings.adminPin) {
+        res.send(404, 'Wrong PIN');
+        winston.error('[resetCredit] Wrong PIN entered')
+        return;
+    }
+
+    r.table("users").filter(true).update({
+        "credit": 0
+    }).run(connection, function (err, dbres) {
+        if (dbres.errors) {
+            winston.error('Couldn\'t reset credit');
+            res.send(500, "Database error");
+            console.log("500");
+        } else {
+            console.log("200");
+            res.send(200);
+            winston.info('[resetCredit] Credit resetted');
+        }
+    });
+});
 
 app.get('/products', function(req, res) {
 

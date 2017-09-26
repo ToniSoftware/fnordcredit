@@ -9,7 +9,8 @@ module.exports = {
     settings: {
         allowDebt: true,
         allowDebtNewUser: true,
-        maxDebt: -150
+        maxDebt: -150,
+        adminPin: 1234
     },
 
     mqtt: {

@@ -448,6 +448,29 @@ function updateFilter() {
     changeView("accounts")
 }
 
+function reset() {
+    showPinpad('admin', function (username, pincode) {
+        hidePinpad();
+        $.ajax({
+            url: "/system/resetCredit",
+            type: "POST",
+            headers: {
+                "X-User-Pincode": pincode
+            },
+            success: function (data) {
+                showSuccessOverlay('Success!');
+                getAllUsers();
+                releaseUi();
+                changeView('statistics');
+            },
+            error: function (err) {
+                showFailureOverlay(err.responseText);
+                releaseUi();
+            }
+        });
+    });
+}
+
 function setup() {
 
     $("#search input").on("input", null, null, updateFilter)
@@ -482,6 +505,10 @@ function setup() {
     });
     $("#sortzyx").click(function () {
         setSort("zyx")
+    });
+    $("#reset").mousedown(function() {
+        console.log('reset');
+        reset();
     });
 
 
