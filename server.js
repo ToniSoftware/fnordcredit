@@ -517,7 +517,8 @@ function addUser(username, res) {
         name: username,
         credit: 0,
         lastchanged: r.now(),
-        pincode: null
+        pincode: null,
+        debtAllowed: config.settings.allowDebtNewUser,
     }).run(connection, function (err, dbres) {
         if (dbres.errors) {
             winston.error('Couldn\'t save user ' + username + err);
