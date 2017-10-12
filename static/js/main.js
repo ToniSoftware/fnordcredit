@@ -144,8 +144,21 @@ function getAllUsers() {
         return account.name.toLowerCase().indexOf(filter) != -1
     });
 
+    var users_filter = {
+        native: [],
+        other: [],
+    };
+
+    filtered.forEach(function(user){
+        if(user.name.charAt(0) == "P"){
+            users_filter.native.push(user);
+        }else{
+            users_filter.other.push(user);
+        }
+    });
+
     $.get('templates/overview.dust.html', function(template) {
-        dust.renderSource(template, { users: filtered }, function(err, out) {
+        dust.renderSource(template, { usersNative: users_filter.native, usersOther: users_filter.other }, function(err, out) {
             $("#accounts").html(out);
 
             $(".account.user").click(function(e) {
