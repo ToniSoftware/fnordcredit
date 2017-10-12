@@ -506,10 +506,21 @@ function setup() {
     $("#sortzyx").click(function () {
         setSort("zyx")
     });
-    $("#reset").mousedown(function() {
-        console.log('reset');
-        reset();
+    // disable mousedown for touchscreen
+    $("div").on('mousedown', function(e) {
+        //e.preventDefault();
     });
+
+    //$("html").removeClass('hover');
+
+    $("pinwindow-pad *").each(function() {
+        $(this).on('click',function() {
+            $(this).clone(true).insertAfter($(this));
+            $(this).remove();
+        });
+    });
+
+    setSort("abc");
 
 
     $(document).scannerDetection({

@@ -576,7 +576,8 @@ function renameUser(user, newname, pincode, res) {
         name: newname,
         credit: user.credit,
         lastchanged: r.now(),
-        pincode: pincode
+        pincode: pincode,
+        debtAllowed: config.settings.allowDebtNewUser,
     }).run(connection, function (err, dbres) {
         if (dbres.errors) {
             winston.error('Couldn\'t save user ' + newname);
