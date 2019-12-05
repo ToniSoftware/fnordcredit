@@ -287,11 +287,11 @@ function changePin(username, pincode, newPincode) {
 }
 
 function changeView(view) {
-    resetTimer();
     $('.view').hide();
     switch (view) {
         case 'details':
             $('#details').show();
+            resetTimer();
             break;
         case 'accounts':
             socket.emit('getAccounts');
@@ -300,17 +300,21 @@ function changeView(view) {
             break;
         case 'newuser':
             $('#view-newuser').show();
+            resetTimer();
             break;
         case 'rename':
             $('#renameuser').show();
+            resetTimer();
             break;
         case 'changetoken':
             $('#changetoken').show();
+            resetTimer();
             break;
         case 'statistics':
             socket.emit('getAccounts');
             showStatistics();
             $('#view-statistics').show();
+            resetTimer();
             break;
 
         default:
@@ -324,7 +328,7 @@ function resetTimer() {
     timer = setTimeout(function () {
         hidePinpad();
         changeView('accounts');
-    }, 23.42 * 1000);
+    }, 30.42 * 1000);
 }
 
 
@@ -399,7 +403,6 @@ function showPinpad(username, cb) {
                 $('#pinpad-num-' + i).on('click', function (e) {
                     var field = $('#pinwindow-pin');
                     field.val(field.val() + e.target.textContent);
-                    resetTimer();
                 });
             }
             $("#pinwindowForm").submit(function (e) {
