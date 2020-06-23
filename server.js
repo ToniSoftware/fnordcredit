@@ -131,6 +131,7 @@ app.get('/user/:username', function (req, res) {
 
     var username = req.params.username;
     var pincode = req.header("X-User-Pincode");
+    var userRet;
 
     checkUserPin(username, pincode, function() {
         getUserAsync(username, function (err, user) {
@@ -146,8 +147,22 @@ app.get('/user/:username', function (req, res) {
                 winston.error('[userCredit] No user ' + username + ' found.')
                 return;
             }
+            userRet = user;
+            //return res.send(userRet);
+            getRecentUserTransactionsAsync(username,  function(err, transactions) {
 
-            return res.send(JSON.stringify(user));
+                if (err) {
+                    return res.send(500, 'Error retrieving recent transactions of user ' + username + ' from database');
+                }
+                if (transactions == undefined) {
+                    res.send(404, 'User not found');
+                    winston.error('[userCredit] No transactions for user ' + username + ' found.')
+                    return;
+                }
+
+                var result = '{"user":' + JSON.stringify(userRet) + ', "transactions":' + JSON.stringify(transactions) + '}';
+                return res.send(JSON.stringify(result));
+            });
         });
     }, function () {
         return res.send(401, 'Authorization required')
@@ -501,6 +516,21 @@ function getAllUsersAsync(cb) {
 function getUserTransactionsAsync(username, cb) {
     r.table('transactions')
         .filter(r.row('username').eq(username))
+        .run(connection, function (err, cursor) {
+
+            if (err) {
+                return cb(err, null);
+            }
+
+            cursor.toArray(cb);
+        });
+}
+
+function getRecentUserTransactionsAsync(username, cb) {
+    r.table('transactions')
+        .orderBy(r.desc('time'))
+        .filter(r.row('username').eq(username))
+        .slice(0,5)
         .run(connection, function (err, cursor) {
 
             if (err) {

@@ -8,6 +8,16 @@
             <ul class="pager">
                 <li class="previous back" data-back-view="accounts"><a>← Back</a></li>
             </ul>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Recently bought</h2>
+                </div>
+                <div class="panel-body">
+                    {#transactions}
+                    <p>{description}: {@substr str="{time}" begin="11" end="16" /} {@substr str="{time}" begin="8" end="10" /}.{@substr str="{time}" begin="5" end="7" /}.</p>
+                    {/transactions}
+                </div>
+            </div>
         </div>
 
         <div class="creditarea col-md-9">
