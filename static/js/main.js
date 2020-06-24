@@ -92,7 +92,6 @@ function showDetail(userData, pincode) {
     accounts.forEach(function (account) {
         saldo += account.credit;
     });
-
     $.get('templates/user-details.dust.html', function(template) {
         dust.renderSource(template, {"user": userData.user, "products": products , "transactions": userData.transactions}, function(err, out) {
             $("#details").html(out);
@@ -115,7 +114,7 @@ function showDetail(userData, pincode) {
 
             // set PIN button
             $("#changeSetPinButton").click(function () {
-                showPinpad(userData.name, function (username, newPincode) {
+                showPinpad(userData.user.name, function (username, newPincode) {
                     hidePinpad();
                     changePin(username, pincode, newPincode);
                 });
@@ -220,7 +219,7 @@ function newUser() {
 
 function renameUser(userData, pincode) {
     $.get('templates/rename-user.dust.html', function(template) {
-        dust.renderSource(template, {"user": userData}, function(err, out) {
+        dust.renderSource(template, {"user": userData.user}, function(err, out) {
             $("#renameuser").html(out);
 
             $("#renameUserForm").submit(function (e) {
@@ -234,8 +233,8 @@ function renameUser(userData, pincode) {
                         "X-User-Pincode": pincode
                     },
                     success: function () {
-                        userData.name = $('#newname').val();
-                        getUserDetail(userData.name, pincode);
+                        userData.user.name = $('#newname').val();
+                        getUserDetail(userData.user.name, pincode);
                         releaseUi();
                     },
                     error: function (err) {
@@ -254,7 +253,7 @@ function renameUser(userData, pincode) {
 function changeToken (userData, pincode) {
 
     $.get('templates/change-token.dust.html', function(template) {
-        dust.renderSource(template, {"user": userData}, function(err, out) {
+        dust.renderSource(template, {"user": userData.user}, function(err, out) {
             $("#changetoken").html(out);
 
             $("#changeTokenForm").submit(function (e) {
@@ -268,7 +267,7 @@ function changeToken (userData, pincode) {
                         "X-User-Pincode": pincode
                     },
                     success: function () {
-                        getUserDetail(userData.name, pincode);
+                        getUserDetail(userData.user.name, pincode);
                         releaseUi();
                     },
                     error: function (err) {
@@ -361,7 +360,7 @@ function changeCredit(userData, pincode, delta, description, product, productObj
         type: "POST",
         dataType: "json",
         data: {
-            "username": userData.name,
+            "username": userData.user.name,
             "delta": delta,
             "product": product,
             "description": description
@@ -390,7 +389,8 @@ function changeCredit(userData, pincode, delta, description, product, productObj
                 }
             }
             showSuccessOverlay(message);
-            showDetail(data, pincode);
+            userData.user = data
+            showDetail(userData, pincode);
             releaseUi();
         },
         error: function (err) {
